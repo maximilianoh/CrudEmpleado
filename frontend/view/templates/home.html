@@ -1,0 +1,149 @@
+<div class="row">
+  <table class="table table-striped">
+    <tr>
+      <th class="centrado" style="width:20%">ID</th>
+      <th class="centrado" style="width:35%">Nombre</th>
+      <th class="centrado" style="width:5%">Edad</th>
+      <th class="centrado" style="width:20%">Sueldo</th>
+      <th class="centrado" style="width:20%">Accion</th>
+    </tr>
+    <tbody>
+
+      <td class="centradoblanco"><input type="search" ng-model="buscar.id" placeholder="Buscar por id..."></input></td>
+      <td class="centradoblanco"><input type="search" ng-model="buscar.nombre" placeholder="Buscar por nombre..."
+        my-autocomplete="listadenombre"></input></td>
+        <td class="centradoblanco"><input type="search" ng-model="buscar.edad" placeholder="Buscar por edad..."></input></td>
+        <td class="centradoblanco"><input type="search" ng-model="buscar.sueldo" placeholder="Buscar por sueldo..."></input></td>
+        <tr dir-paginate="empleado in filtrados = (post| filter:{ id: buscar.id, nombre: buscar.nombre, edad: buscar.edad, sueldo: buscar.sueldo}) |itemsPerPage:5">
+          <div ng-if="filtrados.length==0" growl></div>
+          <td class="centrado" style="width:20%">{{ empleado.id }}</td>
+          <td class="centrado" style="width:35%">{{ empleado.nombre }}</td>
+          <td class="centrado" style="width:5%">{{ empleado.edad }}</td>
+          <td class="centrado" style="width:20%">{{ empleado.sueldo | currency }}</td>
+          <td class="centrado" style="width:20%">
+            <button class="btn btn-warning btn-small" ng-click="empleadoaEditar(empleado)" 
+            data-toggle="modal" data-target="#myModal2">
+            <i class="fa fa-pencil-square-o"></i>editar</button>
+            
+            <button class="btn btn-danger btn-small" ng-click="empleadoaEliminar(empleado.id)" data-toggle="modal" data-target="#exampleModal">
+              <i class="fa fa-trash-o"></i> eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+
+
+      </table>
+      <hr>
+      <div class="text-center">
+        <dir-pagination-controls
+        max-size="5"
+        direction-links="true"
+        boundary-links="true" >
+      </dir-pagination-controls>
+    </div>
+    
+  </div>
+
+  <div class="modal fade" name="modalcrear"  id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Agregar Empleado</h4>
+        </div>
+        <form name="form" novalidate>
+          <div name="div" class="modal-body">
+
+
+            <label  class="col-sm-10 control-label" > <i class="fa fa-user-circle"></i>  Nombre </label>
+            <input name="name" type="text"
+            ng-class="{error: form.name.$error.required && !form.name.$pristine || 
+            form.name.$valid!=true && !form.name.$pristine, success:form.name.$valid==true,'form-control':form.name.$pristine}" 
+            ng-model=crear.nombre placeholder="Nombre" ng-minlength="3" ng-maxlength="40" required/>
+            <span class="colorerror" ng-show="form.name.$error.required && !form.name.$pristine">Nombre es requerido.</span>
+            <span class="colorerror" ng-show="form.name.$valid!=true && !form.name.$pristine"> Nombre introducido no valido.</span>
+            <br>
+            <label  class="col-sm-10 control-label" ><i class="fa fa-birthday-cake"></i> Edad</label>
+            <input name="edad" type="number" ng-class="{ error: form.edad.$error.required && !form.edad.$pristine || 
+            form.edad.$valid!=true && !form.edad.$pristine, success:form.edad.$valid==true,'form-control':form.edad.$pristine}" ng-model=crear.edad placeholder="Edad 18 - 65" min="18" max="65" required />
+            <span class="colorerror" ng-show="form.edad.$error.required && !form.edad.$pristine">Edad es requerida.</span>
+            <span class="colorerror" ng-show="form.edad.$valid!=true && !form.edad.$pristine"> Edad introducida no valida.</span>
+            <br>
+            <label  class="col-sm-10 control-label" ><i class="fa fa-money"></i> Sueldo</label>
+            <input name="sueldo" type="number" ng-class="{ error: form.sueldo.$error.required && !form.sueldo.$pristine  || form.sueldo.$valid!=true && !form.sueldo.$pristine, success:form.sueldo.$valid==true,'form-control':form.sueldo.$pristine}" ng-model=crear.sueldo placeholder="Sueldo" min="9500" max="99999999999999999" required/>
+            <span class="colorerror" ng-show="form.sueldo.$error.required && !form.sueldo.$pristine">Sueldo es requerido.</span>
+            <span class="colorerror" ng-show="form.sueldo.$valid!=true && !form.sueldo.$pristine"> Sueldo introducido no valido.</span>
+            <br>
+            <div class="col-sm-10"> </div> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success"  data-dismiss="modal" ng-click="addEmpleado()"
+            ng-disabled="form.name.$valid!=true || form.edad.$valid!=true || form.sueldo.$valid!=true || 
+            crear.edad<18 ||crear.edad>65  || crear.sueldo<9500">Agregar</button>
+              <button type="button" class="btn btn-default" ng-click="limpiarAdd()" data-dismiss="modal">Close</button>
+            </div> 
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="myModal2" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Editar Empleado</h4>
+          </div>
+          <form name="form2" novalidate>
+            <div class="modal-body">
+              <label  class="col-sm-10 control-label" > <i class="fa fa-id-card"></i>  ID </label>
+              <input ng-if="editado!=null" type="text" class="form-control" ng-model=preeditar.id ng-value="editado.id" disabled/>
+              <label  class="col-sm-10 control-label" > <i class="fa fa-user-circle"></i>  Nombre </label>
+              <input name="name" type="text" ng-model=preeditar.nombre ng-class="{ error: form2.name.$error.required && !form2.name.$pristine || form2.name.$valid!=true && !form2.name.$pristine, success:form2.name.$valid==true,'form-control':form2.name.$pristine}" ng-minlength="3" ng-maxlength="40"  required placeholder="Nombre"/>
+              <span class="colorerror" ng-show="form2.name.$error.required && !form2.name.$pristine">Nombre es requerido.</span>
+              <span class="colorerror" ng-show="form2.name.$valid!=true && !form2.name.$pristine"> Nombre introducido no valido.</span>
+              <label  class="col-sm-10 control-label" ><i class="fa fa-birthday-cake"></i> Edad</label>
+              <input name="edad" type="number" ng-model=preeditar.edad ng-class="{ error: form2.edad.$error.required && !form2.edad.$pristine || 
+              form2.edad.$valid!=true && !form2.edad.$pristine, success:form2.edad.$valid==true,'form-control':form2.edad.$pristine}" min="18" max="65"  required placeholder="Edad"/>
+              <span class="colorerror" ng-show="form2.edad.$error.required && !form2.edad.$pristine">Edad es requerida.</span>
+              <span class="colorerror" ng-show="form2.edad.$valid!=true && !form2.edad.$pristine"> Edad introducida no valida.</span>
+              <label  class="col-sm-10 control-label" ><i class="fa fa-money"></i> Sueldo</label>
+              <input name="sueldo" type="number" ng-model=preeditar.sueldo ng-class="{ error: form2.sueldo.$error.required && !form2.sueldo.$pristine  || form2.sueldo.$valid!=true && !form2.sueldo.$pristine, success:form2.sueldo.$valid==true,'form-control':form2.sueldo.$pristine}" min="9500" max="99999999999999999" required placeholder="Sueldo"/>
+              <span class="colorerror" ng-show="form2.sueldo.$error.required && !form2.sueldo.$pristine">Sueldo es requerido.</span>
+              <span class="colorerror" ng-show="form2.sueldo.$valid!=true && !form2.sueldo.$pristine"> Sueldo introducido no valido.</span>
+              <div class="col-sm-10"> </div> 
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success"  data-dismiss="modal" ng-click="editEmpleado()"
+              ng-disabled="form2.name.$valid!=true || form2.edad.$valid!=true || form2.sueldo.$valid!=true || 
+              preeditar.edad<18 ||preeditar.edad>65 || preeditar.sueldo<9500"
+                >Editar</button>
+                <button type="button" class="btn btn-default" ng-click="limpiarEdit()" data-dismiss="modal">Cerrar</button>
+              </div> 
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Confirmacion</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              ¿Desea realmente eliminar a este empleado?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="deleteEmpleado()">Si, eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div> 
+</div> 

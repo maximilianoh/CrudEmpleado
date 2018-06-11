@@ -1,0 +1,42 @@
+<div data-toggle="modal"class="modal" name="modalcrear"  id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Agregar Empleado</h4>
+        </div>
+        <form name="form" novalidate>
+          <div name="div" class="modal-body">
+
+
+            <label  class="col-sm-10 control-label" > <i class="fa fa-user-circle"></i>  Nombre </label>
+            <input name="name" type="text"
+            ng-class="{error: form.name.$error.required && !form.name.$pristine || 
+            form.name.$valid!=true && !form.name.$pristine, success:form.name.$valid==true,'form-control':form.name.$pristine}" 
+            ng-model=crear.nombre placeholder="Nombre" ng-minlength="3" ng-maxlength="40" required/>
+            <span class="colorerror" ng-show="form.name.$error.required && !form.name.$pristine">Nombre es requerido.</span>
+            <span class="colorerror" ng-show="form.name.$valid!=true && !form.name.$pristine"> Nombre introducido no valido.</span>
+            <br>
+            <label  class="col-sm-10 control-label" ><i class="fa fa-birthday-cake"></i> Edad</label>
+            <input name="edad" type="number" ng-class="{ error: form.edad.$error.required && !form.edad.$pristine || 
+            form.edad.$valid!=true && !form.edad.$pristine, success:form.edad.$valid==true,'form-control':form.edad.$pristine}" ng-model=crear.edad placeholder="Edad 18 - 65" min="18" max="65" required />
+            <span class="colorerror" ng-show="form.edad.$error.required && !form.edad.$pristine">Edad es requerida.</span>
+            <span class="colorerror" ng-show="form.edad.$valid!=true && !form.edad.$pristine"> Edad introducida no valida.</span>
+            <br>
+            <label  class="col-sm-10 control-label" ><i class="fa fa-money"></i> Sueldo</label>
+            <input name="sueldo" type="number" ng-class="{ error: form.sueldo.$error.required && !form.sueldo.$pristine  || form.sueldo.$valid!=true && !form.sueldo.$pristine, success:form.sueldo.$valid==true,'form-control':form.sueldo.$pristine}" ng-model=crear.sueldo placeholder="Sueldo" min="9500" max="99999999999999999" required/>
+            <span class="colorerror" ng-show="form.sueldo.$error.required && !form.sueldo.$pristine">Sueldo es requerido.</span>
+            <span class="colorerror" ng-show="form.sueldo.$valid!=true && !form.sueldo.$pristine"> Sueldo introducido no valido.</span>
+            <br>
+            <div class="col-sm-10"> </div> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success"  data-dismiss="modal" ng-click="addEmpleado()"
+            ng-disabled="form.name.$valid!=true || form.edad.$valid!=true || form.sueldo.$valid!=true || 
+            crear.edad<18 ||crear.edad>65  || crear.sueldo<9500">Agregar</button>
+            <button type="button" class="btn btn-default" ng-click="limpiarAdd()" data-dismiss="modal">Close</button>
+            </div> 
+          </form>
+        </div>
+      </div>
+    </div>
